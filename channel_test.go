@@ -2,6 +2,7 @@ package go_routine
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -68,3 +69,34 @@ func TestInOutChannel(t *testing.T){
 }
 
 //buffered channel menampung data antrian di channel
+func TestBufferedChannel(t *testing.T) {
+	channel := make(chan string,2)
+	defer close(channel)
+	go func() {
+		channel <- "vandy"
+		channel <- "ahmad"
+	}()
+	go func() {
+		fmt.Println(<-channel)
+		fmt.Println(<-channel)
+	}()
+	time.Sleep(2*time.Second)
+	fmt.Println("selesai")
+
+}
+
+//range channel
+func TestRangeChannel(t *testing.T) {
+	channel := make(chan string)
+	go func() {
+		for i:=0; i<100; i++{
+			channel <- "Perulangan ke "+strconv.Itoa(i)
+		}
+		close(channel)
+	}()
+
+	for data := range channel{
+		fmt.Println("Menerima Data",data)
+	}
+	fmt.Println("Selesai")
+}
